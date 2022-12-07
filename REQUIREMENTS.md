@@ -4,21 +4,46 @@ The company stakeholders want to create an online storefront to showcase their g
 These are the notes from a meeting with the frontend developer that describe what endpoints the API needs to supply, as well as data shapes the frontend and backend have agreed meet the requirements of the application. 
 
 ## API Endpoints
+
+#### Homepage Route
+``` GET ./ ```
+
+#### Users Routes
+Read all users - ``` GET /users ```
+Read specific user - ``` GET /users/:username ```
+Create user - ``` POST /users ```
+Delete specific user - ``` DELETE /users/:id ```
+
+#### Products Routes
+Read all users - ``` GET /products ```
+Read specific product - ``` GET /products/:username ```
+Create product - ``` POST /products ```
+Delete specific product - ``` DELETE /products/:id ```
+
+#### Orders Routes
+Read all orders - ``` GET /orders ```
+Read orders by user id - ``` GET /orders/:username ```
+Create order - ``` POST /orders ```
+Delete specific user - ``` DELETE /orders/:id ```
+
 #### Products
 - Index 
-- Show
-- Create [token required]
-- [OPTIONAL] Top 5 most popular products 
-- [OPTIONAL] Products by category (args: product category)
+- Show (args: product name)
+- Create (product name, product price) [token required]
+- Delete (args: product id) [token required]
 
 #### Users
 - Index [token required]
-- Show [token required]
-- Create N[token required]
+- Show (args: user id) [token required]
+- Create (args: first name, last name, password) [token required]
+- Delete (args: user id)
 
 #### Orders
+- Index
+- Show (args: user id)
+- Create (args: status, quantity)
+- Delete (args: order id) [token required]
 - Current Order by user (args: user id)[token required]
-- [OPTIONAL] Completed Orders by user (args: user id)[token required]
 
 ## Data Shapes
 #### Product

@@ -6,7 +6,7 @@ export type Product = {
 }
 
 export class productStore {
-   async index(): Promise<Product[]> {
+   async index(): Promise<Product[]> { // SHOW ALL products
       try {
          const conn = await client.connect();
          const sql = 'SELECT * FROM products';
@@ -19,7 +19,7 @@ export class productStore {
       }
    }
 
-   async show(id: number): Promise<Product> {
+   async show(id: number): Promise<Product> { // SHOW one product
       try {
          const conn = await client.connect();
          const sql = 'SELECT product FROM products WHERE id=($1)';
@@ -32,7 +32,7 @@ export class productStore {
       }
    }
 
-   async create(product: Product): Promise<Product> {
+   async create(product: Product): Promise<Product> { // CREATE new product
       try {
          const conn = await client.connect();
          const sql = 'INSERT INTO products (name, price) VALUES($1, $2) RETURNING *';
@@ -45,7 +45,22 @@ export class productStore {
       }
    }
 
-   async delete(id: number): Promise<Product> {
+   async update(product: Product): Promise <Product | null> { // UPDATE product info
+      try {
+         const conn = await client.connect();
+         const sql = 'UPDATE products SET name = $1, price = $2 WHERE id = $3';
+         const result = await conn.query(sql, [
+            product.name,
+            product.price,
+         ]);
+         conn.release();
+         return result.rows[0];
+      } catch (error) {
+         throw new Error(`Could not update product ${product.name}. Error: ${error}`)
+      }
+   }
+
+   async delete(id: number): Promise<Product> { // DELETE one product
       try {
          const conn = await client.connect();
          const sql = 'DELETE FROM porducts WHERE id=($1)';

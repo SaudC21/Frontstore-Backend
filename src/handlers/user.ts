@@ -17,7 +17,12 @@ const index = async (_req: Request, res: Response) => {
 
 const show = async (req: Request, res: Response) => {
    try {
-      const user = await store.show(req.body.id);
+      const user = await store.show(req.params.id as unknown as number);
+
+      if(!user) {
+         res.status(400).send(`User ${req.params.id} not found`);
+      }
+
       res.json(user);
    } catch (error) {
       res.status(400)
@@ -28,13 +33,13 @@ const show = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
    try {
       const user: User = {
-         first_name: req.body.first_name,
-         last_name: req.body.last_name,
-         username: req.body.username,
-         password_digest: req.body.password,
+         first_name: req.query.first_name as string,
+         last_name: req.query.last_name as string,
+         username: req.query.username as string,
+         password_digest: req.query.password_digest as string,
       }
 
-      if(user.first_name === undefined  || user.last_name === undefined || user.username === undefined || user.password_digest === undefined) {
+      if(user.first_name == undefined  || user.last_name == undefined || user.username == undefined || user.password_digest == undefined) {
          res.status(400)
          res.send("Missing required parameters")
          return
@@ -52,14 +57,13 @@ const create = async (req: Request, res: Response) => {
 
 const authenticate = async (req: Request, res: Response) => {
    try {
-     const username = req.body.username as unknown as string;
-     const password = req.body.password as unknown as string;
- 
-   if (username === undefined || password === undefined) {
+      const username = req.query.username as unknown as string;
+      const password = req.query.password as unknown as string;
+   if (username == undefined || password == undefined) {
       res.status(400);
       res.send("Some required parameters are missing! eg.:username, :password");
       return false;
-   }
+   }   
  
      const user: User | null = await store.authenticate(username, password);
  
@@ -81,12 +85,21 @@ const authenticate = async (req: Request, res: Response) => {
 const update = async (req: Request, res: Response) => {
    try {
       const user: User = {
-         first_name: req.body.first_name,
-         last_name: req.body.last_name,
-         username: req.body.username,
-         password_digest: req.body.password,
+         first_name: req.query.first_name as string,
+         last_name: req.query.last_name as string,
+         username: req.query.username as string,
+         password_digest: req.query.password as string,
       }
-      const result = await store.update(user);
+
+      const user_data = {
+         fName: user.first_name as string,
+         lName: user.last_name as string,
+         username: user.username as string,
+         password: user.password_digest as string,
+         id: req.params.id as string
+      }
+      console.log(req)
+      const result = await store.update(user_data);
       res.json(result);
    } catch (error) {
       res.status(400);
@@ -107,7 +120,7 @@ const destroy = async (req: Request, res: Response) => {
 const userRoutes = async (app: express.Application) => {
    app.get('/users', verifyAuthToken, index)
    app.get('/users/:id', verifyAuthToken, show)
-   app.post('/users/register', create)
+   app.post('/users/register', verifyAuthToken, create)
    app.post('/users/authenticate', authenticate)
    app.put('/users/:id', verifyAuthToken, update)
    app.delete('/users/:id', verifyAuthToken, destroy)

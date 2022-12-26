@@ -43,6 +43,11 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'INSERT INTO users (first_name, last_name, username, password_digest) VALUES($1, $2, $3, $4) RETURNING *';
 
+         console.log("Create from model");
+
+         console.log(bcrypt.hashSync("123" + pepper, saltRounds))
+
+
          // Password hashing
          const hash = bcrypt.hashSync(user.password_digest + pepper, saltRounds);
 
@@ -65,7 +70,9 @@ export class userStore {
          if(result.rows.length) {
             const userRecord = result.rows[0];
 
-            if(bcrypt.compareSync(password + pepper, userRecord.password_digest)){
+            const encryptedPass_digest = bcrypt.hashSync(userRecord.password_digest + pepper, saltRounds)
+
+            if(bcrypt.compareSync(password + pepper, encryptedPass_digest)){
                return userRecord;
             }
          }
@@ -77,15 +84,16 @@ export class userStore {
       return null;
    }
 
-   async update(user: User): Promise <User | null> { // UPDATE user info
-      try {
+   async update(user: any): Promise <User | null> { // UPDATE user info
+      try { // Here is a problem
          const conn = await client.connect();
          const sql = 'UPDATE users SET first_name = $1, last_name = $2, username = $3, password_digest = $4 WHERE id = $5';
          const result = await conn.query(sql, [
-            user.first_name,
-            user.last_name,
+            user.fName as string,
+            user.lName,
             user.username,
             user.password_digest,
+            user.id
          ]);
          conn.release();
          return result.rows[0];

@@ -22,7 +22,7 @@ export class productStore {
    async show(id: number): Promise<Product> { // SHOW one product
       try {
          const conn = await client.connect();
-         const sql = 'SELECT product FROM products WHERE id=($1)';
+         const sql = 'SELECT * FROM products WHERE id=($1)';
          const result = await conn.query(sql, [id]);
          const product = result.rows[0];
          conn.release();
@@ -45,13 +45,15 @@ export class productStore {
       }
    }
 
-   async update(product: Product): Promise <Product | null> { // UPDATE product info
+   async update(product: any): Promise <Product | null> { // UPDATE product info
       try {
+         console.log(product)
          const conn = await client.connect();
          const sql = 'UPDATE products SET name = $1, price = $2 WHERE id = $3';
          const result = await conn.query(sql, [
             product.name,
             product.price,
+            product.id
          ]);
          conn.release();
          return result.rows[0];
@@ -63,7 +65,7 @@ export class productStore {
    async delete(id: number): Promise<Product> { // DELETE one product
       try {
          const conn = await client.connect();
-         const sql = 'DELETE FROM porducts WHERE id=($1)';
+         const sql = 'DELETE FROM products WHERE id=($1)';
          const result = await conn.query(sql, [id]);
          const product = result.rows[0];
          conn.release();

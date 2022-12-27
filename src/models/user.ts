@@ -43,11 +43,6 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'INSERT INTO users (first_name, last_name, username, password_digest) VALUES($1, $2, $3, $4) RETURNING *';
 
-         console.log("Create from model");
-
-         console.log(bcrypt.hashSync("123" + pepper, saltRounds))
-
-
          // Password hashing
          const hash = bcrypt.hashSync(user.password_digest + pepper, saltRounds);
 
@@ -85,14 +80,15 @@ export class userStore {
    }
 
    async update(user: any): Promise <User | null> { // UPDATE user info
-      try { // Here is a problem
+      try {
+         const password_digest = bcrypt.hashSync(user.password + pepper, saltRounds)
          const conn = await client.connect();
          const sql = 'UPDATE users SET first_name = $1, last_name = $2, username = $3, password_digest = $4 WHERE id = $5';
          const result = await conn.query(sql, [
-            user.fName as string,
+            user.fName,
             user.lName,
             user.username,
-            user.password_digest,
+            password_digest,
             user.id
          ]);
          conn.release();
@@ -107,6 +103,7 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'DELETE FROM users WHERE id=($1)';
          const result = await conn.query(sql, [id]);
+         console.log([id])
          const user = result.rows[0];
          conn.release();
          return user;

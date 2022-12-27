@@ -16,7 +16,8 @@ const index = async (_req: Request, res: Response) => {
 
 const show = async (req: Request, res: Response) => {
    try {
-      const order = await store.show(req.body.id);
+      const orderId = req.params.id as unknown as number;
+      const order = await store.show(orderId);
       res.json(order);
    } catch (error) {
       res.status(400);
@@ -27,11 +28,10 @@ const show = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
    try {
       const order: Order = {
-         product_id: req.body.product_id,
-         quantity: req.body.quantity,
-         user_id: req.body.user_id,
-         status: req.body.status,
+         user_id: req.query.user_id as unknown as number,
+         status: req.query.status as string,
       }
+      console.log(order);
       const orderRecord = await store.create(order);
       res.json(orderRecord);
    } catch (error) {
@@ -43,8 +43,6 @@ const create = async (req: Request, res: Response) => {
 const update = async (req: Request, res: Response) => {
    try {
       const order: Order = {
-         product_id: req.body.product_id,
-         quantity: req.body.quantity,
          user_id: req.body.user_id,
          status: req.body.status,
       }
@@ -96,7 +94,7 @@ const deleteOrderProduct = async (req: Request, res: Response) => {
 const orderRoutes = async (app: express.Application) => {
    app.get('/orders', index);
    app.get('/orders/:id', show);
-   app.post('/orders', verifyAuthToken, create);
+   app.post('/orders/create', verifyAuthToken, create);
    app.put('/orders/:id', verifyAuthToken, update);
    app.delete('/orders/:id', verifyAuthToken, destroy);
    app.post('/orders/products', verifyAuthToken, createOrderProduct);

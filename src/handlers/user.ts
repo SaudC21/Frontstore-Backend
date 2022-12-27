@@ -84,23 +84,15 @@ const authenticate = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
    try {
-      const user: User = {
-         first_name: req.query.first_name as string,
-         last_name: req.query.last_name as string,
-         username: req.query.username as string,
-         password_digest: req.query.password as string,
-      }
-
       const user_data = {
-         fName: user.first_name as string,
-         lName: user.last_name as string,
-         username: user.username as string,
-         password: user.password_digest as string,
+         fName: req.query.first_name as string,
+         lName: req.query.last_name as string,
+         username: req.query.username as string,
+         password: req.query.password_digest as string,
          id: req.params.id as string
       }
-      console.log(req)
       const result = await store.update(user_data);
-      res.json(result);
+      res.json(`User #${user_data.id} has been updated`);
    } catch (error) {
       res.status(400);
       res.json(error);
@@ -109,8 +101,10 @@ const update = async (req: Request, res: Response) => {
 
 const destroy = async (req: Request, res: Response) => {
    try {
-      const deleted = await store.delete(req.body.id);
-      res.json(deleted);
+      const userId = req.params.id as unknown as number;
+      console.log(userId)
+      await store.delete(userId);
+      res.json(`User #${userId} has been deleted`);
    } catch (error) {
       res.status(400)
       res.json(error)

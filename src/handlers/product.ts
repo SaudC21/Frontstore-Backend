@@ -16,7 +16,8 @@ const index = async (_req: Request, res: Response) => {
 
 const show = async (req: Request, res: Response) => {
    try {
-      const product = await store.show(req.body.id);
+      const productId = req.params.id as unknown as number;
+      const product = await store.show(productId);
       res.json(product);
    } catch (error) {
       res.status(400)
@@ -27,11 +28,11 @@ const show = async (req: Request, res: Response) => {
 const create = async (req: Request, res: Response) => {
    try {
       const product: Product = {
-         name: req.body.name,
-         price: req.body.price,
+         name: req.query.name as string,
+         price: req.query.price as unknown as number,
       }
       const productRecord = await store.create(product);
-      res.json(productRecord);
+      res.json(`Product ${productRecord.name} has been created`);
    } catch (error) {
       res.status(400);
       res.json(error);
@@ -40,12 +41,13 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
    try {
-      const product: Product = {
-         name: req.body.name,
-         price: req.body.price,
+      const product_data = {
+         name: req.query.name as string,
+         price: req.query.price as unknown as number,
+         id: req.params.id as string,
       }
-      const result = await store.update(product);
-      res.json(result);
+      const result = await store.update(product_data);
+      res.json(`Proudct #${product_data.id} has been updated`);
    } catch (error) {
       res.status(400);
       res.json(error);
@@ -54,8 +56,9 @@ const update = async (req: Request, res: Response) => {
 
 const destroy = async (req: Request, res: Response) => {
    try {
-      const deleted = await store.delete(req.body.id);
-      res.json(deleted);
+      const productId = req.params.id as unknown as number;
+      await store.delete(productId);
+      res.json(`Proudct #${productId} has been deleted`);
    } catch (error) {
       res.status(400);
       res.json(error);

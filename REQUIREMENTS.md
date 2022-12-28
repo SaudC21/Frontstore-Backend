@@ -12,18 +12,20 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### Users
 - Index `/users` [GET] [token required]
-- Create `/users/create` [POST]
+- Create `/users/create` [POST] [token required]
 - Show `/users/:id` [GET] [token required]
 - Update `/users/:id` [PUT] [token required]
 - Delete `/users/:id` [DELETE] [token required]
 - Authenticate `/users/authenticate` [POST]
 
 #### Orders
-- Index `/orders` [GET] [token required]
+- Index `/orders` [GET] 
+- Show `/orders/:id` [GET] 
 - Create `/orders/create` [POST] [token required]
-- Show `/orders/:id` [GET] [token required]
 - Update `/orders/:id` [PUT] [token required]
 - Delete `/orders/:id` [DELETE] [token required]
+- Create Order Product `/orders/products` [POST] [token required]
+- Delete Order Product `/orders/products:id` [DELETE] [token required]
 
 ## Data Shapes
 #### Product
@@ -36,17 +38,18 @@ Table: *products*
 Table: *users*
 - id `SERIAL PRIMARY KEY`
 - username `VARCHAR`
-- firstname `VARCHAR`
-- lastname `VARCHAR`
+- first_name `VARCHAR`
+- last_name `VARCHAR`
 - password_digest `VARCHAR`
 
 #### Orders
 Table: *orders*
 - id `SERIAL PRIMARY KEY`
 - user_id `INTEGER` `REFERENCES users(id)`
-- status `BOOLEAN`
+- status `VARCHAR`
 
 Table: *order_products*
+- id `SERIAL PRIMARY KEY`
 - order_id `INTEGER` `REFERENCES orders(id)` 
 - product_id `INTEGER` `REFERENCES products(id)`
 - quantity `INTEGER`

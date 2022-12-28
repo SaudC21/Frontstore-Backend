@@ -56,19 +56,18 @@ export class orderStore {
       }
    }
 
-   async update(order: Order): Promise <Order | null> { // UPDATE order info
+   async update(order: any): Promise <String | null> { // UPDATE order info
       try {
          const conn = await client.connect();
-         const sql = 'UPDATE orders SET name = $1, price = $2 WHERE id = $3';
-
-         const result = await conn.query(sql, [
+         const sql = 'UPDATE orders SET user_id = $1, status = $2 WHERE id = $3';
+         await conn.query(sql, [
             order.user_id,
             order.status,
+            order.id,
          ]);
          conn.release();
-         const orderRecord = result.rows[0];
 
-         return orderRecord;
+         return `User's order with id #${order.user_id} has been updated`;
       } catch (error) {
          throw new Error(`Could not update order of user ${order.user_id}. Error: ${error}`)
       }
@@ -78,7 +77,6 @@ export class orderStore {
       try {
          const conn = await client.connect();
          const sql = 'DELETE FROM orders WHERE id=($1)';
-
          const result = await conn.query(sql, [id]);
          const order = result.rows[0];
 
@@ -108,7 +106,7 @@ export class orderStore {
       }
    }
 
-   async deleteOrderProduct(orderProduct_id: string): Promise<Order> {
+   async deleteOrderProduct(orderProduct_id: number): Promise<Order> {
       try {
          const conn = await client.connect();
          const sql = 'DELETE FROM order_products WHERE id=($1)';

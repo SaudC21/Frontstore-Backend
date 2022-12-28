@@ -1,8 +1,9 @@
 import { Order, orderStore } from "../../models/order";
+import express, { request, Request, Response } from 'express'
 
 const store = new orderStore();
 
-describe("User Model", () => {
+describe("Order Model", () => {
    it("should have an INDEX method", () => {
       expect(store.index).toBeDefined();
    });
@@ -22,4 +23,13 @@ describe("User Model", () => {
    it("should have a DELETE method", () => {
       expect(store.delete).toBeDefined();
    });
+   // it("It should return 200 response", (done) => {
+   //    request.get('127.0.0.1/users', function(error, response) {
+   //       expect(response.statusCode).toEqual(200);
+   //    });
+   // })
+   it('should return 200 response', async (): Promise<void> => {
+      const res: any = await request.get('/users');
+      expect(res.status as unknown as number).toBe(200);
+    });
 });

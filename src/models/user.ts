@@ -61,13 +61,12 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'SELECT * FROM users WHERE username=($1)';
          const result = await conn.query(sql, [username]);
-
+         console.log(result.rows[0]);
          if(result.rows.length) {
+
             const userRecord = result.rows[0];
 
-            const encryptedPass_digest = bcrypt.hashSync(userRecord.password_digest + pepper, saltRounds)
-
-            if(bcrypt.compareSync(password + pepper, encryptedPass_digest)){
+            if(bcrypt.compareSync(password + pepper, userRecord.password_digest)){
                return userRecord;
             }
          }

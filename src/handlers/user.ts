@@ -64,10 +64,12 @@ const authenticate = async (req: Request, res: Response) => {
       res.send("Some required parameters are missing! eg.:username, :password");
       return false;
    }   
- 
+      console.log(password, username)
      const user: User | null = await store.authenticate(username, password);
+
+     console.log(user);
  
-     if (user === null) {
+     if (user == null) {
        res.status(401);
        res.send(`Wrong password for user ${username}.`);
        return false;

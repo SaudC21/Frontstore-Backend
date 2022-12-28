@@ -1,5 +1,5 @@
 import { Order, orderStore } from "../../models/order";
-import express, { request, Request, Response } from 'express'
+import { Request, Response } from 'express'
 
 const store = new orderStore();
 
@@ -28,8 +28,4 @@ describe("Order Model", () => {
    //       expect(response.statusCode).toEqual(200);
    //    });
    // })
-   it('should return 200 response', async (): Promise<void> => {
-      const res: any = await request.get('/users');
-      expect(res.status as unknown as number).toBe(200);
-    });
 });

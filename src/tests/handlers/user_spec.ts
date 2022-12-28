@@ -1,29 +1,11 @@
-import { User, userStore } from "../../models/user";
+import supertest from "supertest";
+import app from "../../server";
 
-const store = new userStore();
+const req = supertest(app);
 
 describe("User Model", () => {
-   it("should have an INDEX method", () => {
-      expect(store.index).toBeDefined();
-   });
-  
-   it("should have a SHOW method", () => {
-      expect(store.show).toBeDefined();
-   });
-  
-   it("should have a CREATE method", () => {
-      expect(store.create).toBeDefined();
-   });
-  
-   it("should have a AUTHENTICATE method", () => {
-      expect(store.authenticate).toBeDefined();
-   });
-  
-   it("should have a UPDATE method", () => {
-      expect(store.update).toBeDefined();
-   });
-
-   it("should have a DELETE method", () => {
-      expect(store.delete).toBeDefined();
-   });
+   it('should check the users route unsuccessfully', async (): Promise<void> => {
+      const res: any = await req.get('/users');
+      expect(res.statusCode).toBe(200);
+    });
 });

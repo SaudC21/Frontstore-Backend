@@ -1,4 +1,5 @@
 import { User, userStore } from "../../models/user";
+import { Request, Response } from 'express'
 
 const store = new userStore();
 

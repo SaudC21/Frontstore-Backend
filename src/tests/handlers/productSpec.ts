@@ -1,9 +1,13 @@
-import { Product, productStore } from "../../models/product";
+import { productStore } from "../../models/product";
+import supertest from "supertest";
+import app from "../../server";
+
+const req = supertest(app);
 
 const store = new productStore();
 
-describe("Product Model", () => {
-   it("shoud check product routes", () => {
+describe("Product Handler", () => {
+   it("shoud check product methods to be defined", () => {
       expect(store.index).toBeDefined();
       expect(store.show).toBeDefined();
       expect(store.create).toBeDefined();
@@ -11,24 +15,28 @@ describe("Product Model", () => {
       expect(store.delete).toBeDefined();
    });
 
-   it("should create a product", async (): Promise<void> => {
-      const result: any = await store.create({
-         name: "Test Product",
-         price: 100,
-      });
-      expect(result).toEqual({
-         id: 1,
-         name: "Test Product",
-         price: 100,
-      });
+   it("check index route - OK", async () => {
+      const result = await req.get("/products");
+      expect(result.status).toEqual(200);
    });
 
-   it("should show product with id 1", async (): Promise<void> => {
-      const result: any = await store.show(1);
-      expect(result).toEqual({
-         id: 1,
-         name: "Test Product",
-         price: 100,
-      });
+   it("check show route - OK", async () => {
+      const result = await req.get("/products/1");
+      expect(result.status).toEqual(200);
+   });
+
+   it("check create route - Unauthorized Access", async () => {
+      const result = await req.post("/products/create");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check update route - Unauthorized Access", async () => {
+      const result = await req.put("/products/1");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check delete route - Unauthorized Access", async () => {
+      const result = await req.delete("/products/1");
+      expect(result.status).toEqual(401);
    });
 });

@@ -73,7 +73,7 @@ const createOrderProduct = async (req: Request, res: Response) => {
          product_id: req.query.product_id as unknown as number,
       }
       console.log(OrderProduct)
-      const orderProductRecord = await store.createOrderProduct(OrderProduct);
+      await store.createOrderProduct(OrderProduct);
       res.json(`order for product ${OrderProduct.product_id} has been created`);
    } catch (error) {
       res.status(400);

@@ -1,16 +1,12 @@
 import { User, userStore } from "../../models/user";
+import supertest from "supertest";
+import app from "../../server";
 
+const req = supertest(app);
 const store = new userStore();
 
-const userInstance = {
-   first_name: "John",
-   last_name: "Doe",
-   username: "johndoe-user-model-test",
-   password_digest: "$2b$10$QoGUepjfOZCQWVSR8F8x9.Sa0UQWwBzBcxMXmNlLtwD9pMKu9PdUK",
-};
-
-describe("User Model", () => {
-   it("shoud check users routes", () => {
+describe("User Handler", () => {
+   it("shoud check users methods", () => {
       expect(store.index).toBeDefined();
       expect(store.show).toBeDefined();
       expect(store.create).toBeDefined();
@@ -19,29 +15,41 @@ describe("User Model", () => {
       expect(store.delete).toBeDefined();
    });
 
-   it("should create a user", async (): Promise<void> => {
-      const result = await store.create(userInstance);
-      expect(result).toEqual({
-         first_name: "John",
-         last_name: "Doe",
-         username: "johndoe-user-model-test",
-         password_digest: "$2b$10$QoGUepjfOZCQWVSR8F8x9.Sa0UQWwBzBcxMXmNlLtwD9pMKu9PdUK",
-      });
+   it("check index route - Unauthorized Access", async () => {
+      const result = await req.get("/users");
+      expect(result.status).toEqual(401);
    });
 
-   it("should index 1st user", async (): Promise<void> => {
-      const result = await store.index();
-      expect(result).toContain(result[0]);
+   it("check show route - Unauthorized Access", async () => {
+      const result = await req.get("/users/1");
+      expect(result.status).toEqual(401);
    });
 
-   it("should show user with id 1", async (): Promise<void> => {
-      const result: any = await store.show(1);
-      expect(result).toEqual({
-         id: 1,
-         first_name: "John",
-         last_name: "Doe",
-         username: "johndoe-user-model-test",
-         password_digest: "$2b$10$QoGUepjfOZCQWVSR8F8x9.Sa0UQWwBzBcxMXmNlLtwD9pMKu9PdUK",
+   it("check create route - Not Found", async () => {
+      const result = await req.post("/users/create").send({
+         first_name: "Test",
+         last_name: "User",
+         username: "test-user",
+         password: "password",
       });
+      expect(result.status).toEqual(404);
+   });
+
+   it("check update route - Unauthorized Access", async () => {
+      const result = await req.put("/users/1");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check delete route - Unauthorized Access", async () => {
+      const result = await req.delete("/users/1");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check authenticate route - Bad Request", async () => {
+      const result = await req.post("/users/authenticate").send({
+         username: "test-user",
+         password: "password",
+      });
+      expect(result.status).toEqual(400);
    });
 });

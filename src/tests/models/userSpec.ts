@@ -1,36 +1,38 @@
-import { User, userStore } from "../../models/user";
-import { Request, Response } from 'express'
+import { userStore } from "../../models/user";
 
 const store = new userStore();
 
 const userInstance = {
-   firstname: "Saud",
-   lastname: "Chan",
-   username: "chanju0352-user-model-test",
+   first_name: "John",
+   last_name: "Doe",
+   username: "johndoe-user-model-test",
+   password_digest: "password",
 };
 
 describe("User Model", () => {
-   it("should have an INDEX method", () => {
-      expect(store.index).toBeDefined();
-   });
-  
-   it("should have a SHOW method", () => {
-      expect(store.show).toBeDefined();
-   });
-  
-   it("should have a CREATE method", () => {
-      expect(store.create).toBeDefined();
-   });
-  
-   it("should have a AUTHENTICATE method", () => {
-      expect(store.authenticate).toBeDefined();
-   });
-  
-   it("should have a UPDATE method", () => {
-      expect(store.update).toBeDefined();
+   it("should create a user", async (): Promise<void> => {
+      const result: any = await store.create(userInstance);
+      expect(result).toEqual(
+         jasmine.objectContaining({
+            first_name: "John",
+            last_name: "Doe",
+            username: "johndoe-user-model-test",
+         })
+      );
    });
 
-   it("should have a DELETE method", () => {
-      expect(store.delete).toBeDefined();
+   it("should index 1st user", async (): Promise<void> => {
+      const result = await store.index();
+      expect(result).toContain(result[0]);
+   });
+
+   it("should get order by user id", async (): Promise<void> => {
+      const result: any = await store.show(1);
+      expect(result).toEqual(
+         jasmine.objectContaining({
+            first_name: "Admin",
+            last_name: "Saud",
+         })
+      );
    });
 });

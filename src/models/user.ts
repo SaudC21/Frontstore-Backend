@@ -28,7 +28,7 @@ export class userStore {
    async show(id: number): Promise<User> { // SHOW one user
       try {
          const conn = await client.connect();
-         const sql = 'SELECT user FROM users WHERE id=($1)';
+         const sql = 'SELECT * FROM users WHERE id=($1)';
          const result = await conn.query(sql, [id]);
          const user = result.rows[0];
          conn.release();

@@ -3,15 +3,8 @@ import { User, userStore } from '../models/user'
 import jwt from 'jsonwebtoken';
 import verifyAuthToken from './middleware/verifyAuthToken';
 import dotenv from "dotenv";
-import bcrypt from "bcrypt";
 
 dotenv.config();
-
-const {
-   SALT_ROUNDS,
-   TOKEN_SECRET,
-   PEPPER,
-} = process.env;
 
 const store = new userStore();
 
@@ -47,8 +40,6 @@ const create = async (req: Request, res: Response) => {
          username: req.query.username as string,
          password_digest: req.query.password_digest as string,
       }
-
-      console.log(await bcrypt.hashSync("password" + PEPPER, parseInt(SALT_ROUNDS as string)));
 
       if(user.first_name == undefined  || user.last_name == undefined || user.username == undefined || user.password_digest == undefined) {
          res.status(400)
@@ -104,7 +95,7 @@ const update = async (req: Request, res: Response) => {
          password: req.query.password_digest as string,
          id: req.params.id as string
       }
-      const result = await store.update(user_data);
+      await store.update(user_data);
       res.json(`User #${user_data.id} has been updated`);
    } catch (error) {
       res.status(400);

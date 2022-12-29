@@ -46,7 +46,7 @@ const update = async (req: Request, res: Response) => {
          price: req.query.price as unknown as number,
          id: req.params.id as string,
       }
-      const result = await store.update(product_data);
+      await store.update(product_data);
       res.json(`Proudct #${product_data.id} has been updated`);
    } catch (error) {
       res.status(400);

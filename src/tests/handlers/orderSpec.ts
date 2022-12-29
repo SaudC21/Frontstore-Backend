@@ -1,8 +1,11 @@
 import { Order, orderStore } from "../../models/order";
+import supertest from "supertest";
+import app from "../../server";
 
+const req = supertest(app);
 const store = new orderStore();
 
-describe("User Model", () => {
+describe("Order Handler", () => {
    it("check orders routes", () => {
       expect(store.index).toBeDefined();
       expect(store.show).toBeDefined();
@@ -11,24 +14,28 @@ describe("User Model", () => {
       expect(store.delete).toBeDefined();
    });
 
-   it("should create an order", async (): Promise<void> => {
-      const result: any = await store.create({
-         user_id: 1,
-         status: "active",
-      });
-      expect(result).toEqual({
-         id: 1,
-         user_id: 1,
-         status: "active",
-      });
+   it("check index route - OK", async () => {
+      const result = await req.get("/orders");
+      expect(result.status).toEqual(200);
    });
 
-   it("should show order with id 1", async (): Promise<void> => {
-      const result: any = await store.show(1);
-      expect(result).toEqual({
-         id: 1,
-         user_id: 1,
-         status: "active",
-      });
+   it("check show route - OK", async () => {
+      const result = await req.get("/orders/1");
+      expect(result.status).toEqual(200);
+   });
+
+   it("check create route - Unauthorized Access", async () => {
+      const result = await req.post("/orders/create");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check update route - Unauthorized Access", async () => {
+      const result = await req.put("/orders/1");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check delete route - Unauthorized Access", async () => {
+      const result = await req.delete("/orders/1");
+      expect(result.status).toEqual(401);
    });
 });

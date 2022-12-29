@@ -6,7 +6,6 @@ dotenv.config();
 
 const verifyAuthToken = (req: Request, res: Response, next: NextFunction) => {
 	try {
-		//console.log(bcrypt.hashSync("Sa123" + pepper, saltRounds))
 		const token = req.headers.authorization as string;
 
 		if(!token) {

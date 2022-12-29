@@ -3,23 +3,32 @@ import { Order, orderStore } from "../../models/order";
 const store = new orderStore();
 
 describe("User Model", () => {
-   it("should have an INDEX method", () => {
+   it("check orders routes", () => {
       expect(store.index).toBeDefined();
-   });
-  
-   it("should have a SHOW method", () => {
       expect(store.show).toBeDefined();
-   });
-  
-   it("should have a CREATE method", () => {
       expect(store.create).toBeDefined();
-   });
-  
-   it("should have a UPDATE method", () => {
       expect(store.update).toBeDefined();
+      expect(store.delete).toBeDefined();
    });
 
-   it("should have a DELETE method", () => {
-      expect(store.delete).toBeDefined();
+   it("should create an order", async (): Promise<void> => {
+      const result: any = await store.create({
+         user_id: 1,
+         status: "active",
+      });
+      expect(result).toEqual({
+         id: 1,
+         user_id: 1,
+         status: "active",
+      });
+   });
+
+   it("should show order with id 1", async (): Promise<void> => {
+      const result: any = await store.show(1);
+      expect(result).toEqual({
+         id: 1,
+         user_id: 1,
+         status: "active",
+      });
    });
 });

@@ -1,11 +1,47 @@
-import supertest from "supertest";
-import app from "../../server";
+import { User, userStore } from "../../models/user";
 
-const req = supertest(app);
+const store = new userStore();
+
+const userInstance = {
+   first_name: "John",
+   last_name: "Doe",
+   username: "johndoe-user-model-test",
+   password_digest: "$2b$10$QoGUepjfOZCQWVSR8F8x9.Sa0UQWwBzBcxMXmNlLtwD9pMKu9PdUK",
+};
 
 describe("User Model", () => {
-   it('should check the users route unsuccessfully', async (): Promise<void> => {
-      const res: any = await req.get('/users');
-      expect(res.statusCode).toBe(200);
-    });
+   it("shoud check users routes", () => {
+      expect(store.index).toBeDefined();
+      expect(store.show).toBeDefined();
+      expect(store.create).toBeDefined();
+      expect(store.authenticate).toBeDefined();
+      expect(store.update).toBeDefined();
+      expect(store.delete).toBeDefined();
+   });
+
+   it("should create a user", async (): Promise<void> => {
+      const result = await store.create(userInstance);
+      expect(result).toEqual({
+         first_name: "John",
+         last_name: "Doe",
+         username: "johndoe-user-model-test",
+         password_digest: "$2b$10$QoGUepjfOZCQWVSR8F8x9.Sa0UQWwBzBcxMXmNlLtwD9pMKu9PdUK",
+      });
+   });
+
+   it("should index 1st user", async (): Promise<void> => {
+      const result = await store.index();
+      expect(result).toContain(result[0]);
+   });
+
+   it("should show user with id 1", async (): Promise<void> => {
+      const result: any = await store.show(1);
+      expect(result).toEqual({
+         id: 1,
+         first_name: "John",
+         last_name: "Doe",
+         username: "johndoe-user-model-test",
+         password_digest: "$2b$10$QoGUepjfOZCQWVSR8F8x9.Sa0UQWwBzBcxMXmNlLtwD9pMKu9PdUK",
+      });
+   });
 });

@@ -3,23 +3,32 @@ import { Product, productStore } from "../../models/product";
 const store = new productStore();
 
 describe("Product Model", () => {
-   it("should have an INDEX method", () => {
+   it("shoud check product routes", () => {
       expect(store.index).toBeDefined();
-   });
-  
-   it("should have a SHOW method", () => {
       expect(store.show).toBeDefined();
-   });
-  
-   it("should have a CREATE method", () => {
       expect(store.create).toBeDefined();
-   });
-  
-   it("should have a UPDATE method", () => {
       expect(store.update).toBeDefined();
+      expect(store.delete).toBeDefined();
    });
 
-   it("should have a DELETE method", () => {
-      expect(store.delete).toBeDefined();
+   it("should create a product", async (): Promise<void> => {
+      const result: any = await store.create({
+         name: "Test Product",
+         price: 100,
+      });
+      expect(result).toEqual({
+         id: 1,
+         name: "Test Product",
+         price: 100,
+      });
+   });
+
+   it("should show product with id 1", async (): Promise<void> => {
+      const result: any = await store.show(1);
+      expect(result).toEqual({
+         id: 1,
+         name: "Test Product",
+         price: 100,
+      });
    });
 });

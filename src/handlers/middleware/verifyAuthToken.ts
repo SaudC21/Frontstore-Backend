@@ -7,7 +7,7 @@ dotenv.config();
 const verifyAuthToken = (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const token = req.headers.authorization as string;
-
+		
 		if(!token) {
 			return res.status(401).send("Access Denied. Missing token");
 		}

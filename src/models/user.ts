@@ -61,11 +61,8 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'SELECT * FROM users WHERE username=($1)';
          const result = await conn.query(sql, [username]);
-         console.log(result.rows[0]);
          if(result.rows.length) {
-
             const userRecord = result.rows[0];
-
             if(bcrypt.compareSync(password + pepper, userRecord.password_digest)){
                return userRecord;
             }
@@ -84,8 +81,8 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'UPDATE users SET first_name = $1, last_name = $2, username = $3, password_digest = $4 WHERE id = $5';
          const result = await conn.query(sql, [
-            user.fName,
-            user.lName,
+            user.first_name,
+            user.last_name,
             user.username,
             password_digest,
             user.id
@@ -102,7 +99,6 @@ export class userStore {
          const conn = await client.connect();
          const sql = 'DELETE FROM users WHERE id=($1)';
          const result = await conn.query(sql, [id]);
-         console.log([id])
          const user = result.rows[0];
          conn.release();
          return user;

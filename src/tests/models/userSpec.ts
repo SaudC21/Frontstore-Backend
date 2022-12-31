@@ -26,13 +26,38 @@ describe("User Model", () => {
       expect(result).toContain(result[0]);
    });
 
-   it("should get order by user id", async (): Promise<void> => {
-      const result: any = await store.show(1);
+   it("should get user by user id", async (): Promise<void> => {
+      const result: any = await store.show(3);
       expect(result).toEqual(
          jasmine.objectContaining({
-            first_name: "Admin",
-            last_name: "Saud",
+            first_name: "AboDa7m",
+            last_name: "3TB",
          })
       );
+   });
+
+   it("shouldn't update user with id 1", async (): Promise<void> => {
+      const user_data = {
+         first_name: "John-updated",
+         last_name: "Doe-updated",
+         username: "johndoe-updated",
+         password_digest: "password",
+         id: "4",
+      };
+      const result: any = await store.update(user_data);
+      expect(result).toEqual(undefined);
+   });
+
+   it("should delete user with id 1", async (): Promise<void> => {
+      const result: any = await store.delete(5);
+      expect(result).toEqual(undefined);
+   });
+
+   it("shouldn't authenticate user", async (): Promise<void> => {
+      const result: any = await store.authenticate(
+         "johndoe-user-model-test",
+         "password"
+      );
+      expect(result).toEqual(null);
    });
 });

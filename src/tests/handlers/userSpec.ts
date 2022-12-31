@@ -15,14 +15,12 @@ describe("User Handler", () => {
       expect(store.delete).toBeDefined();
    });
 
-   it("check index route - Unauthorized Access", async () => {
-      const result = await req.get("/users");
-      expect(result.status).toEqual(401);
-   });
-
-   it("check show route - Unauthorized Access", async () => {
-      const result = await req.get("/users/1");
-      expect(result.status).toEqual(401);
+   it("check authenticate route - OK", async () => {
+      const result = await req.post("/users/authenticate").send({
+         username: "Administ",
+         password: "password",
+      });
+      expect(result.status).toEqual(200);
    });
 
    it("check create route - Not Found", async () => {
@@ -35,21 +33,23 @@ describe("User Handler", () => {
       expect(result.status).toEqual(404);
    });
 
+   it("check index route - Unauthorized Access", async () => {
+      const result = await req.get("/users");
+      expect(result.status).toEqual(401);
+   });
+
+   it("check show route - Unauthorized Access", async () => {
+      const result = await req.get("/users/1");
+      expect(result.status).toEqual(401);
+   });
+
    it("check update route - Unauthorized Access", async () => {
       const result = await req.put("/users/1");
       expect(result.status).toEqual(401);
    });
 
-   it("check delete route - Unauthorized Access", async () => {
+   it("check delete route - Bad Request", async () => {
       const result = await req.delete("/users/1");
-      expect(result.status).toEqual(401);
-   });
-
-   it("check authenticate route - Bad Request", async () => {
-      const result = await req.post("/users/authenticate").send({
-         username: "test-user",
-         password: "password",
-      });
       expect(result.status).toEqual(400);
    });
 });

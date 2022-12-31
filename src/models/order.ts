@@ -42,7 +42,6 @@ export class orderStore {
       try {
          const conn = await client.connect();
          const sql = 'INSERT INTO orders (user_id, status) VALUES($1, $2) RETURNING *';
-         console.log(order.user_id, order.status)
          const result = await conn.query(sql, [
             order.user_id,
             order.status,

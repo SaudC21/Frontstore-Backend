@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express'
 import { User, userStore } from '../models/user'
 import jwt from 'jsonwebtoken';
 import verifyAuthToken from './middleware/verifyAuthToken';
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ const show = async (req: Request, res: Response) => {
    try {
       const user = await store.show(req.params.id as unknown as number);
 
-      if(!user) {
+      if (!user) {
          res.status(400).send(`User ${req.params.id} not found`);
       }
 
@@ -41,7 +41,7 @@ const create = async (req: Request, res: Response) => {
          password_digest: req.query.password_digest as string,
       }
 
-      if(user.first_name == undefined  || user.last_name == undefined || user.username == undefined || user.password_digest == undefined) {
+      if (user.first_name == undefined || user.last_name == undefined || user.username == undefined || user.password_digest == undefined) {
          res.status(400)
          res.send("Missing required parameters")
          return
@@ -49,7 +49,7 @@ const create = async (req: Request, res: Response) => {
 
       const userRecord = await store.create(user);
       var token = jwt.sign({ user: userRecord }, process.env.TOKEN_SECRET as string);
-      
+
       res.json(token);
    } catch (error) {
       res.status(400)
@@ -59,30 +59,14 @@ const create = async (req: Request, res: Response) => {
 
 const authenticate = async (req: Request, res: Response) => {
    try {
-      const username = req.query.username as unknown as string;
-      const password = req.query.password as unknown as string;
-   if (username == undefined || password == undefined) {
-      res.status(400);
-      res.send("Some required parameters are missing! eg.:username, :password");
-      return false;
-   }   
-      console.log(password, username)
-     const user: User | null = await store.authenticate(username, password);
+      const user = await store.authenticate(req.body.username as unknown as string, req.body.password as unknown as string);
 
-     console.log(user);
- 
-     if (user == null) {
-       res.status(401);
-       res.send(`Wrong password for user ${username}.`);
-       return false;
-     }
+      var token = jwt.sign({ user: user }, process.env.TOKEN_SECRET as string);
 
-     var token = jwt.sign({ user: user }, process.env.TOKEN_SECRET as string);
- 
-     res.json(token);
+      res.status(200).json(token);
    } catch (error) {
-     res.status(400);
-     res.json(error);
+      res.status(400);
+      res.json(error);
    }
 }
 
@@ -106,7 +90,6 @@ const update = async (req: Request, res: Response) => {
 const destroy = async (req: Request, res: Response) => {
    try {
       const userId = req.params.id as unknown as number;
-      console.log(userId)
       await store.delete(userId);
       res.json(`User #${userId} has been deleted`);
    } catch (error) {
@@ -121,7 +104,7 @@ const userRoutes = async (app: express.Application) => {
    app.post('/users/register', verifyAuthToken, create)
    app.post('/users/authenticate', authenticate)
    app.put('/users/:id', verifyAuthToken, update)
-   app.delete('/users/:id', verifyAuthToken, destroy)
+   app.delete('/users/:id', destroy)
 }
 
 export default userRoutes;

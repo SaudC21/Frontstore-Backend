@@ -1,5 +1,9 @@
 # Storefront Backend Project
 
+This is a backend API build in Nodejs for an online store. It exposes a RESTful API that will be used by the frontend developer on the frontend.
+
+The database schema and and API route information can be found in the [REQUIREMENT.md](https://github.com/SaudC21/StoreFront-Backend/blob/master/REQUIREMENTS.md)
+
 ## Getting Started
 
 This repo contains a basic Node and Express app to get you started in constructing an API. To get started, clone this repo and run `yarn` in your terminal at the project root.
